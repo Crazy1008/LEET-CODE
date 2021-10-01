@@ -1,0 +1,45 @@
+#1077
+
+#SOLUTION 1:
+# left join project table on employee table
+# rank on each employee's experience, group by project_id --> use window function to rank (dense rank)
+# then select the target
+
+
+SELECT project_id, employee_id FROM 
+
+(
+SELECT Project.project_id, Project.employee_id, Employee.experience_years,
+
+dense_rank() over (partition by Project.project_id order by Employee.experience_years desc ) as rank1
+
+FROM Project
+
+LEFT JOIN Employee
+
+ON Project.employee_id = Employee.employee_id
+    
+    ) A 
+    
+WHERE RANK1 = 1
+
+
+#SOLUTION 2: USE CTE
+
+WITH A AS(
+
+SELECT Project.project_id, Project.employee_id, Employee.experience_years,
+
+dense_rank() over (partition by Project.project_id order by Employee.experience_years desc ) as rank1
+
+FROM Project
+
+LEFT JOIN Employee
+
+ON Project.employee_id = Employee.employee_id
+    
+    ) 
+  
+SELECT project_id, employee_id FROM A
+
+WHERE RANK1 = 1
