@@ -1,0 +1,37 @@
+
+#solution 1 can work, but it cannot print out all result which have same count number.
+#therefore, better to rank the total employee number then print the result.
+
+
+SELECT project_id
+
+FROM Project
+
+group by project_id
+
+order by count(employee_id) desc
+
+limit 1
+
+#solution 2 work:
+
+SELECT b.project_id 
+
+FROM (
+
+SELECT a.project_id, total1,
+
+dense_rank() over (order by total1 desc) as rank1
+
+FROM (
+
+SELECT project_id, count(employee_id) as total1
+
+FROM Project
+
+group by project_id
+    
+    ) A
+    ) B
+    
+WHERE rank1 = 1
