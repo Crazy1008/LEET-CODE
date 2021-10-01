@@ -1,0 +1,9 @@
+#leet code 1050
+
+#note: the execution order of count and group by: group by > having > select
+
+SELECT distinct actor_id, director_id FROM ActorDirector
+
+group by actor_id, director_id
+
+having count(*) >= 3
