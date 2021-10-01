@@ -1,0 +1,78 @@
+
+# for method 1 & 2:
+# SALES table left join Product
+# select buyer who bought ipthone as subquery using in WHEN condition
+# select buyer who bought S8 and not in the list who buy ipthone
+
+
+# method 1 is not working: the second condition under WHERE is not working because before adding the second condition, the result is : 1, S8 / 3, S8, the filter I
+#          added is not working on the result.
+# ALWAYS REMEMBER DISTINCT !!!!!!!
+
+
+SELECT DISTINCT Sales.buyer_id
+
+FROM Sales 
+
+LEFT JOIN Product
+
+ON Product.product_id = Sales.product_id
+
+WHERE 
+
+    Product.product_name = 'S8' 
+
+   and Product.product_name not in
+   
+            (
+
+                    select product_name from Product
+    
+                    where product_name = 'iPhone'
+
+            )
+            
+# method 2: worked
+
+SELECT distinct Sales.buyer_id
+
+FROM Sales 
+
+LEFT JOIN Product
+
+ON Product.product_id = Sales.product_id
+
+WHERE 
+
+    Product.product_name = 'S8' 
+
+   and buyer_id not in
+   
+            (
+
+                    select buyer_id from Sales s
+    
+                     join Product p on p.product_id = s.product_id
+    
+                    where p.product_name = 'iPhone'
+
+            )
+
+# method 3: worked
+
+SELECT DISTINCT buyer_id
+FROM Sales
+WHERE product_id = (SELECT product_id FROM Product WHERE product_name = 'S8')
+AND buyer_id NOT IN (SELECT DISTINCT buyer_id FROM Sales 
+                     WHERE product_id = (SELECT product_id FROM Product
+                                        WHERE product_name = 'iPhone'))
+ORDER BY 1
+
+# method 4: 
+
+SELECT DISTINCT buyer_id
+FROM   sales s
+       LEFT JOIN product p USING(product_id)
+GROUP  BY buyer_id
+HAVING Sum(product_name = 'S8') > 0
+       AND Sum(product_name = 'iPhone') = 0 
