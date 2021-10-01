@@ -1,4 +1,5 @@
 #difference between solution 1 & 2: window function on sum can be subsituted by sum & group by
+# the other thing need to be noticed is window function can show sum in each row, need to pay attention on that
 
 #solution 1:
 
