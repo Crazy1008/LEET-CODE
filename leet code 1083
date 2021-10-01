@@ -58,7 +58,26 @@ WHERE
 
             )
 
-# method 3: worked
+
+# method 3: same logic with above, just substitute to CTE
+
+with CTE_SELLER AS (
+Select s.buyer_id from Sales s
+left join
+product p
+on s.product_id = p.product_id
+where p.product_name = 'iPhone'
+)
+
+Select distinct buyer_id from Sales s
+left join
+product p
+on s.product_id = p.product_id
+where s.buyer_id Not In (Select buyer_id From CTE_SELLER)
+and p.product_name = 'S8'
+
+
+# method 4: worked
 
 SELECT DISTINCT buyer_id
 FROM Sales
@@ -68,7 +87,7 @@ AND buyer_id NOT IN (SELECT DISTINCT buyer_id FROM Sales
                                         WHERE product_name = 'iPhone'))
 ORDER BY 1
 
-# method 4: 
+# method 5: 
 
 SELECT DISTINCT buyer_id
 FROM   sales s
