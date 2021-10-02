@@ -1,0 +1,19 @@
+# Sales left join product
+# select product which was sold in required date
+# subquery to select those product which was sold after required date then use not in to get target
+
+SELECT distinct Product.product_id, Product.product_name FROM Sales
+
+LEFT JOIN Product on Sales.product_id = Product.product_id
+
+where sale_date >= '2019/01/01' AND sale_date <= '2019/03/31'
+
+AND Sales.product_id NOT IN 
+
+                (SELECT product_id FROM Sales
+                
+                    where sale_date > '2019/03/31'
+                
+                    or sale_date < '2019/01/01')
+
+order by Product.product_id
