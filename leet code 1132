@@ -1,0 +1,30 @@
+# as mentioned in instruction, duplicate rows might be found, therefore we do need use distinct to count
+
+# however, window function cannot implement distinct, so get error at first attempt
+
+# using LEFT JOIN first, to get rows which is removed
+
+# then use count
+
+
+ 
+SELECT round(avg(count_spam/count_total)*100,2) as average_daily_percent FROM (
+
+SELECT distinct Actions.action_date, 
+
+#count(distinct Removals.post_id) over (partition by action_date) as count_spam,
+    
+count(distinct Removals.post_id) as count_spam,
+
+#count(distinct Actions.post_id) over (partition by action_date) as count_total
+    
+count(distinct Actions.post_id) as count_total
+
+FROM Actions LEFT JOIN Removals ON Actions.post_id = Removals.post_id and Actions.extra = 'spam'
+    
+    where extra = 'spam'
+    
+    group by action_date
+    
+    ) a
+    
